@@ -1,0 +1,55 @@
+{% extends 'task/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card shadow border-0 rounded-3 overflow-hidden">
+            <div class="bg-primary p-4 text-center text-white position-relative">
+                <div class="mb-2">
+                    <i class="bi bi-person-circle display-2"></i>
+                </div>
+                <h4 class="fw-bold mb-0">{{ request.user.username|title }}</h4>
+                <small class="opacity-75">Tizim foydalanuvchisi</small>
+            </div>
+            
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-bar-chart-line text-primary"></i> Umumiy natijalar</h5>
+                
+                <div class="row text-center mb-4">
+                    <div class="col-6 border-end">
+                        <h2 class="fw-bold text-dark mb-0">{{ total_tasks }}</h2>
+                        <span class="text-muted small">Yaratilgan tasklar</span>
+                    </div>
+                    <div class="col-6">
+                        <h2 class="fw-bold text-success mb-0">{{ completed_tasks }}</h2>
+                        <span class="text-muted small">Bajarilganlar</span>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="fw-semibold text-secondary small">Ish unumdorligi ko'rsatkichi</span>
+                        <span class="fw-bold text-primary small">{{ progress_percentage }}%</span>
+                    </div>
+                    <div class="progress" style="height: 12px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" 
+                             role="progressbar" 
+                             style="width: {{ progress_percentage }}%">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-light border mt-4 mb-0 text-center text-muted small">
+                    {% if progress_percentage == 100 and total_tasks > 0 %}
+                        Ajoyib! Barcha rejalarni uddaladingiz. Haqiqiy professionalsiz! 😎🔥
+                    {% elif progress_percentage >= 50 %}
+                        Yaxshi natija! Ishlaringizning yarmidan ko'pi bajarildi. Davom eting! 💪
+                    {% else %}
+                        Hali qilinadigan ishlar ko'p. Kichik qadamlar bilan maqsad sari boring! 🚀
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

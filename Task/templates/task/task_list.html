@@ -1,0 +1,119 @@
+{% extends 'task/base.html' %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-12 d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h2><i class="bi bi-list-task text-primary"></i> Vazifalar Ro'yxati</h2>
+            <p class="text-muted mb-0">Barcha vazifalaringizni shu yerdan boshqaring va filtrlang.</p>
+        </div>
+        
+        <form method="get" class="d-flex gap-2 col-md-4 col-12">
+            <input type="hidden" name="status" value="{{ status_filter }}">
+            <div class="input-group">
+                <input type="text" name="search-area" class="form-control shadow-sm" placeholder="Vazifa nomini qidirish..." value="{{ search_input }}">
+                <button class="btn btn-primary shadow-sm" type="submit"><i class="bi bi-search"></i></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12 d-flex justify-content-between">
+        <div class="btn-group shadow-sm" role="group">
+            <a href="?status=all&search-area={{ search_input }}" class="btn btn-outline-primary {% if status_filter == 'all' %}active{% endif %}">Hammasi</a>
+            <a href="?status=new&search-area={{ search_input }}" class="btn btn-outline-info {% if status_filter == 'new' %}active{% endif %}">Yangi</a>
+            <a href="?status=in-progress&search-area={{ search_input }}" class="btn btn-outline-warning {% if status_filter == 'in-progress' %}active{% endif %}">Jarayonda</a>
+            <a href="?status=done&search-area={{ search_input }}" class="btn btn-outline-success {% if status_filter == 'done' %}active{% endif %}">Bajarildi</a>
+        </div>
+        <div>
+            <a href="{% url 'task_create' %}" class="btn btn-success shadow-sm">
+                <i class="bi bi-plus-lg"></i> Yangi vazifa qo'shish
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                {% if tasks %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 40%">Vazifa nomi</th>
+                                    <th>Ustuvorlik</th>
+                                    <th>Muddat (Deadline)</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Amallar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for task in tasks %}
+                                    <tr>
+                                        <td>
+                                            <h6 class="mb-0 fw-bold">{{ task.title }}</h6>
+                                        </td>
+                                        <td>
+                                            <span class="badge {% if task.priority == 'high' %}bg-danger{% elif task.priority == 'medium' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                                                {{ task.get_priority_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="{% if task.status != 'done' %}text-danger fw-bold{% else %}text-muted{% endif %}">
+                                                <i class="bi bi-calendar-event"></i> {{ task.deadline|date:"d-M, H:i" }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if task.status == 'new' %}
+                                                <span class="badge bg-info">Yangi</span>
+                                            {% elif task.status == 'in-progress' %}
+                                                <span class="badge bg-warning text-dark">Jarayonda</span>
+                                            {% else %}
+                                                <span class="badge bg-success">Bajarildi</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end">
+                                            <!-- Tahrirlash (O'zgartirish) tugmasi shu yerga qo'shildi -->
+                                            <a href="{% url 'task_update' task.id %}" class="btn btn-sm btn-outline-warning me-1" title="Tahrirlash">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+
+                                            <div class="dropdown d-inline-block">
+                                                <button class="btn btn-sm btn-light border dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                    Statusni o'zgartirish
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <a class="dropdown-item {% if task.status == 'new' %}active disabled{% endif %}" 
+                                                        href="{% url 'change_status' task.id 'new' %}">Yangi</a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item {% if task.status == 'in-progress' %}active disabled{% endif %}" 
+                                                        href="{% url 'change_status' task.id 'in-progress' %}">Jarayonda</a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item {% if task.status == 'done' %}active disabled{% endif %}" 
+                                                        href="{% url 'change_status' task.id 'done' %}">Bajarildi</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-folder-x display-1 text-muted"></i>
+                        <p class="text-muted mt-3">Hech qanday vazifa topilmadi.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'task/base.html' %}
+{% block content %}
+<style>
+    .hover-zoom{
+        transition: transform 0.3s ease
+    }
+    .hover-zoom:hover{
+        transform: scale(1.1);
+}
+</style>
+<div class="row mt-4">
+    <div class="col-md-12 mb-4">
+        <h2><i class="bi bi-graph-up"></i> Mening statistikalarim</h2>
+        <p class="text-muted">Bugungi vazifalar va kunlik rejalarni nazorat qiling.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-3 hover-zoom">
+        <div class="card bg-primary text-white shadow-sm">
+            <a href="{% url 'task_list' %}" class="text-decoration-none text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Jami vazifalar</h5>
+                    <h2 class="display-6 fw-bold">{{ total_tasks }}</h2>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3 hover-zoom">
+        <div class="card bg-info text-white shadow-sm">
+            <a href="{% url 'task_list' %}?status=new&search-area={{ search_input }} " class="text-decoration-none  text-white {% if status_filter == 'new' %}active{% endif %}">
+            <div class="card-body">
+                <h5 class="card-title">Yangi</h5>
+                <h2 class="display-6 fw-bold">{{ new_tasks_count }}</h2>
+            </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3 hover-zoom">
+        <a href="{% url 'task_list' %}?status=in-progress&search-area={{ search_input }}" class="text-decoration-none  text-white {% if status_filter == 'in-progress' %}active{% endif %}">
+        <div class="card bg-warning text-dark shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Jarayonda</h5>
+                <h2 class="display-6 fw-bold">{{ progress_tasks_count }}</h2>
+            </div>
+        </div>
+        </a>
+    </div>
+
+    <div class="col-md-3 mb-3 hover-zoom">
+        <a href="{% url 'task_list' %}?status=done&search-area={{ search_input }}" class="text-decoration-none text-white {% if status_filter == 'done' %}active{% endif %}">
+        <div class="card bg-success text-white shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Bajarildi</h5>
+                <h2 class="display-6 fw-bold">{{ completed_tasks_count }}</h2>
+            </div>
+        </div>
+        </a>
+    </div>
+</div>
+{% if new_tasks_count > 0 %}
+    <div class="alert alert-light border-start border-info border-4 mt-4">
+        <h5><i class="bi bi-lightning-charge text-info"></i> Kuch-quvvat!</h5>
+        <p class="mb-0">Yangi vazifalar kutmoqda. Ularni "Jarayonda" holatiga o'tkazish vaqti keldi.</p>
+    </div>
+{% endif %}
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white fw-bold py-3">
+                <i class="bi bi-clock-history text-danger"></i> Bugungi muddatli (Deadline) vazifalar
+            </div>
+            <div class="card-body">
+                {% if today_deadlines %}
+                    <div class="list-group">
+                        {% for task in today_deadlines %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center border-start border-danger border-4 mb-2 shadow-sm rounded">
+                                <div>
+                                    <h6 class="mb-0 fw-bold">{{ task.title }}</h6>
+                                    <small class="text-muted">Ustuvorlik: {{ task.get_priority_display }}</small>
+                                </div>
+                                <span class="badge bg-danger rounded-pill">{{ task.deadline|date:"H:i" }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0 py-2"><i class="bi bi-check-circle-fill text-success"></i> Bugun tugaydigan shoshilinch vazifalar yo'q. Hammasi nazorat ostida! 😎</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
