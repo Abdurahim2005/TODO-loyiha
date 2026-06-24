@@ -144,3 +144,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
+# TODO loyihangizning Railway havolasini ishonchli deb belgilaymiz
+
+CSRF_TRUSTED_ORIGINS = [
+
+    'https://todo-loyiha.up.railway.app',  # Mana shu yerga hozirgi TODO saytingiz manzilini yozing
+
+]
